@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+.venv/
+.DS_Store
+.git/
+.gitignore
+.vscode/
+.idea/
+*.log
+*.db  # Игнорируем локальные файлы БД
+*.sqlite3
