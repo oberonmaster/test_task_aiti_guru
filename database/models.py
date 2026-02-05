@@ -29,7 +29,25 @@ class Categories(Base):
     # Методы
     @classmethod
     def get_tree(cls, session, parent_id=None):
-        return cls._get_tree_recursive_sql(session, parent_id)    
+        return cls._get_tree_recursive_sql(session, parent_id)
+    
+    @classmethod
+    def _get_tree_recursive_sql(cls, session, parent_id=None):
+        if parent_id:
+            query = session.query(cls).filter(cls.parent_id == parent_id)
+        else:
+            query = session.query(cls).filter(cls.parent_id.is_(None))
+        
+        result = []
+        for category in query.all():
+            category_data = {
+                'id': category.id,
+                'name': category.name,
+                'parent_id': category.parent_id,
+                'children': cls._get_tree_recursive_sql(session, category.id)
+            }
+            result.append(category_data)
+        return result
 
 
 class Nomenclature(Base):

@@ -6,7 +6,7 @@
 from sqlalchemy import create_engine, event
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import sessionmaker
-from database.models import Base, Categories, Client, Orders, Nomenclature
+from database.models import Base, Categories, Client, Orders, Nomenclature, OrderItems
 
 
 @event.listens_for(Engine, "connect")
@@ -91,7 +91,35 @@ class Database:
         session.add_all([order1, order2])
         session.flush()
         
+
+        
+        order_item1 = OrderItems(
+            order_id=order1.id,
+            nomenclature_id=product1.id,
+            quantity=1,
+            price=product1.price
+        )
+        order_item2 = OrderItems(
+            order_id=order1.id,
+            nomenclature_id=product2.id,
+            quantity=2,
+            price=product2.price
+        )
+        order_item3 = OrderItems(
+            order_id=order2.id,
+            nomenclature_id=product5.id,
+            quantity=1,
+            price=product5.price
+        )
+        session.add_all([order_item1, order_item2, order_item3])
+        session.flush()
+        
+        
+        product1.quantity -= 1
+        product2.quantity -= 2
+        product5.quantity -= 1
+        
+        
         session.commit()
         session.close()
         
-        # TODO добавить объекты товаров в заказ с учетом увеличения количества
