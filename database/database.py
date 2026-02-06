@@ -126,30 +126,20 @@ class Database:
         
         
     # сырые запросы
-    def get_top_5_products(self):
-        """
-        Топ-5 самых покупаемых товаров за последний месяц
-        по количеству штук в заказах
-        """
+    def get_sql_raw_query(self, path_to_sql: str, raw_names: list):
         session=self.get_session()
         
         sql_query = ""
-        
-        with open("database/top5query.sql", "r", encoding='utf-8') as query:
+        with open(path_to_sql, "r", encoding='utf-8') as query:
             sql_query = query.read()
-        
         
         result = session.execute(text(sql_query))
         rows = result.fetchall()
-        products = []
+        
+        results = []
         for row in rows:
-            product_dict = {
-                "product_name": row[0],
-                "top_level_category": row[1],
-                "total_sold": float(row[2]) if row[2] else 0.0
-            }
-            products.append(product_dict)
+            results_dict = {raw_names[i]: row[i] for i in range(len(raw_names))}
+            results.append(results_dict)
         
         session.close()
-        return products
-    
+        return results

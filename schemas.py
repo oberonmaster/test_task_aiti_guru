@@ -75,3 +75,12 @@ class TopProductResponse(BaseModel):
 
 class TopProductsResponse(BaseModel):
     products: List[TopProductResponse]
+    
+class ClientSummaryResponse(BaseModel):
+    client_name: str
+    total_price: int
+    
+    
+class FirstLevelChildsResponse(BaseModel):
+    category_name: str
+    first_level_childs_count: int

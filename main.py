@@ -6,7 +6,17 @@ import uvicorn
 from sqlalchemy.orm import Session
 from database.models import Categories, Nomenclature, Client, Orders, OrderItems
 from typing import List
-from schemas import NomenclatureResponse, ClientResponse, OrderResponse, ClientCreate, OrderCreate, OrderItemResponse, AddToOrderRequest, TopProductResponse
+from schemas import (NomenclatureResponse,
+                     ClientResponse,
+                     OrderResponse,
+                     ClientCreate,
+                     OrderCreate,
+                     OrderItemResponse,
+                     AddToOrderRequest,
+                     TopProductResponse,
+                     ClientSummaryResponse,
+                     FirstLevelChildsResponse,
+)
 from datetime import datetime
 
 
@@ -92,8 +102,18 @@ def add_to_order(request: AddToOrderRequest, db: Session = Depends(get_db)):
 
 @app.get("/top5", response_model=List[TopProductResponse])
 def get_top5query():
-    top = db_instance.get_top_5_products()
+    top = db_instance.get_sql_raw_query("database/sql/top5query.sql",["product_name", "top_level_category", "total_sold"])
     return top
+
+@app.get("/clientsummary", response_model=List[ClientSummaryResponse])
+def get_summary():
+    result = db_instance.get_sql_raw_query("database/sql/summaryquery.sql", ["client_name", "total_price"])
+    return result
+
+@app.get("/firstlevelchilds", response_model=List[FirstLevelChildsResponse])
+def get_first_level_childs():
+    result = db_instance.get_sql_raw_query("database/sql/firstlevelchilds.sql",["category_name", "first_level_childs_count"])
+    return result
 
 def main():
     print("Скрипт запущен")
