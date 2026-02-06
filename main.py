@@ -6,7 +6,7 @@ import uvicorn
 from sqlalchemy.orm import Session
 from database.models import Categories, Nomenclature, Client, Orders, OrderItems
 from typing import List
-from schemas import NomenclatureResponse, ClientResponse, OrderResponse, ClientCreate, OrderCreate, OrderItemResponse, AddToOrderRequest
+from schemas import NomenclatureResponse, ClientResponse, OrderResponse, ClientCreate, OrderCreate, OrderItemResponse, AddToOrderRequest, TopProductResponse
 from datetime import datetime
 
 
@@ -88,6 +88,12 @@ def add_to_order(request: AddToOrderRequest, db: Session = Depends(get_db)):
             raise HTTPException(status_code=404, detail="Товар не найден")
     else:
         raise HTTPException(status_code=404, detail="Заказ не найден")
+    
+
+@app.get("/top5", response_model=List[TopProductResponse])
+def get_top5query():
+    top = db_instance.get_top_5_products()
+    return top
 
 def main():
     print("Скрипт запущен")
@@ -100,3 +106,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    

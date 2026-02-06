@@ -1,6 +1,7 @@
 from pydantic import BaseModel, field_serializer
 from datetime import datetime
 from decimal import Decimal
+from typing import List
 
 class CategoryResponse(BaseModel):
     id: int
@@ -65,3 +66,12 @@ class AddToOrderRequest(BaseModel):
     order_id: int
     nomenclature_id: int
     quantity: float
+    
+    
+class TopProductResponse(BaseModel):
+    product_name: str
+    top_level_category: str
+    total_sold: float
+
+class TopProductsResponse(BaseModel):
+    products: List[TopProductResponse]
